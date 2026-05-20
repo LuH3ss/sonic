@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* ─── Tailwind v4 theme tokens — sourced from spec.md ─── */
+@theme inline {
+  /* Typography */
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-cal: "Cal Sans", var(--font-geist-sans), system-ui, sans-serif;
+
+  /* Palette */
+  --color-background: #030303;
+  --color-card:       #080808;
+  --color-border:     #1a1a1a;
+  --color-accent:     #6366f1;
+  --color-foreground: #ededed;
+  --color-muted:      #71717a;
+
+  /* Accent variants for hover/active states */
+  --color-accent-hover: #818cf8;
+
+  /* Shadows — glow uses accent color */
+  --shadow-glow:    0 0 22px 5px rgba(99, 102, 241, 0.55);
+  --shadow-glow-sm: 0 0 12px 2px rgba(99, 102, 241, 0.35);
+
+  /* Easing springs (spec: 0.4s ease-out with springs) */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Duration helpers */
+  --duration-400: 400ms;
+}
+
+/* ─── Base resets ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  background-color: #030303;
+}
+
+body {
+  background-color: #030303;
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Grainy noise overlay ─── */
+/*
+  SVG feTurbulence filter rendered as a fixed full-screen pseudo-element.
+  opacity: 0.032 keeps it subtle — just enough to break the flat digital feel.
+  pointer-events: none ensures it never blocks clicks.
+*/
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}

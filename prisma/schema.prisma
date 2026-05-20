@@ -1,0 +1,64 @@
+// Learn more about the Prisma schema: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  ARTIST
+  LISTENER
+  ADMIN
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  role          UserRole @default(LISTENER)
+  /// Spotify OAuth subject ID — null until the user connects their account
+  spotifyId     String?  @unique @map("spotify_id")
+  /// EVM-compatible wallet address (checksum format)
+  walletAddress String?  @unique @map("wallet_address")
+  avatarUrl     String?  @map("avatar_url")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  tracks Track[]
+
+  @@map("users")
+}
+
+model Track {
+  id          String   @id @default(cuid())
+  title       String
+  /// International Standard Recording Code — unique across all releases
+  isrc        String?  @unique
+  genre       String?
+  /// Track length in milliseconds
+  durationMs  Int      @map("duration_ms")
+  releaseDate DateTime @map("release_date")
+  coverUrl    String?  @map("cover_url")
+  /// Cumulative stream count; BigInt supports catalogs with billions of plays
+  streams     BigInt   @default(0)
+  /// USD per stream, e.g. 0.004 = $0.004 / stream
+  royaltyRate Decimal  @default(0.004) @map("royalty_rate") @db.Decimal(10, 6)
+
+  artistId String @map("artist_id")
+  artist   User   @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([artistId])
+  @@index([releaseDate])
+  @@map("tracks")
+}
