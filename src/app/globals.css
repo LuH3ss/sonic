@@ -1,59 +1,147 @@
 @import "tailwindcss";
 
-/* ─── Tailwind v4 theme tokens — sourced from spec.md ─── */
-@theme inline {
-  /* Typography */
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
-  --font-cal: "Cal Sans", var(--font-geist-sans), system-ui, sans-serif;
+/* ─────────────────────────────────────────────────────────────────────────────
+   LAYER 1 — CSS Custom Properties (source of truth for the Industrial Dark theme)
+   All colour decisions live here. Tailwind + Shadcn components both consume
+   these via the @theme block below.
+───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Core surfaces ── */
+  --background:           #030303;  /* Onyx — main page bg              */
+  --foreground:           #ededed;  /* Near-white body text              */
+  --card:                 #080808;  /* Card surface                      */
+  --card-foreground:      #ededed;
+  --popover:              #0d0d0d;  /* Dropdowns / tooltips              */
+  --popover-foreground:   #ededed;
 
-  /* Palette */
-  --color-background: #030303;
-  --color-card:       #080808;
-  --color-border:     #1a1a1a;
-  --color-accent:     #6366f1;
-  --color-foreground: #ededed;
-  --color-muted:      #71717a;
+  /* ── Brand / interactive ── */
+  --primary:              #6366f1;  /* Indigo Electric — main CTA        */
+  --primary-foreground:   #ffffff;
+  --primary-hover:        #818cf8;  /* Hover variant                     */
 
-  /* Accent variants for hover/active states */
-  --color-accent-hover: #818cf8;
+  /* ── Secondary / neutral interactive ── */
+  --secondary:            #141414;
+  --secondary-foreground: #ededed;
 
-  /* Shadows — glow uses accent color */
-  --shadow-glow:    0 0 22px 5px rgba(99, 102, 241, 0.55);
-  --shadow-glow-sm: 0 0 12px 2px rgba(99, 102, 241, 0.35);
+  /* ── Muted ── */
+  --muted:                #111111;
+  --muted-foreground:     #71717a;
 
-  /* Easing springs (spec: 0.4s ease-out with springs) */
-  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  /* ── Accent (mirrors primary in this theme) ── */
+  --accent:               #6366f1;
+  --accent-foreground:    #ffffff;
 
-  /* Duration helpers */
-  --duration-400: 400ms;
+  /* ── Destructive / error ── */
+  --destructive:          #ef4444;
+  --destructive-foreground: #ffffff;
+
+  /* ── Form / UI chrome ── */
+  --border:               #1a1a1a;
+  --input:                #1a1a1a;
+  --ring:                 #6366f1;
+
+  /* ── Border radius base ── */
+  --radius:               0.5rem;
+
+  /* ── Chart palette ── */
+  --chart-1:              #6366f1;
+  --chart-2:              #818cf8;
+  --chart-3:              #a5b4fc;
+  --chart-4:              #c7d2fe;
+  --chart-5:              #e0e7ff;
+
+  /* ── Glow shadows (used by custom utilities) ── */
+  --glow:                 0 0 22px 5px rgba(99, 102, 241, 0.55);
+  --glow-sm:              0 0 12px 2px rgba(99, 102, 241, 0.35);
+
+  /* ── Motion / easing ── */
+  --ease-smooth:          cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-400:         400ms;
 }
 
-/* ─── Base resets ─── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   LAYER 2 — Tailwind v4 @theme mapping
+   Maps :root CSS vars → Tailwind's --color-* namespace so utilities like
+   bg-background, text-foreground, border-border, ring-ring all work.
+   Also registers fonts, shadows and easing curves as Tailwind tokens.
+───────────────────────────────────────────────────────────────────────────── */
+@theme inline {
+  /* Fonts */
+  --font-sans:  var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono:  var(--font-geist-mono), monospace;
+  --font-cal:   var(--font-cal), var(--font-geist-sans), system-ui, sans-serif;
+
+  /* Colours — full Shadcn-compatible set */
+  --color-background:           var(--background);
+  --color-foreground:           var(--foreground);
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-popover:              var(--popover);
+  --color-popover-foreground:   var(--popover-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-destructive:          var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:               var(--border);
+  --color-input:                var(--input);
+  --color-ring:                 var(--ring);
+  --color-chart-1:              var(--chart-1);
+  --color-chart-2:              var(--chart-2);
+  --color-chart-3:              var(--chart-3);
+  --color-chart-4:              var(--chart-4);
+  --color-chart-5:              var(--chart-5);
+
+  /* Shadows */
+  --shadow-glow:    var(--glow);
+  --shadow-glow-sm: var(--glow-sm);
+
+  /* Easing */
+  --ease-smooth:    var(--ease-smooth);
+
+  /* Duration */
+  --duration-400:   var(--duration-400);
+
+  /* Border radius scale — Shadcn components use rounded-{sm,md,lg,xl} */
+  --radius-sm:  calc(var(--radius) - 4px);
+  --radius-md:  var(--radius);
+  --radius-lg:  calc(var(--radius) + 2px);
+  --radius-xl:  calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE RESETS
+───────────────────────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 html {
   color-scheme: dark;
-  background-color: #030303;
+  background-color: var(--background);
 }
 
 body {
-  background-color: #030303;
-  color: var(--color-foreground);
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-sans);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Grainy noise overlay ─── */
-/*
-  SVG feTurbulence filter rendered as a fixed full-screen pseudo-element.
-  opacity: 0.032 keeps it subtle — just enough to break the flat digital feel.
-  pointer-events: none ensures it never blocks clicks.
-*/
+/* ─────────────────────────────────────────────────────────────────────────────
+   GRAINY NOISE OVERLAY
+   SVG feTurbulence rendered as a fixed full-screen pseudo-element.
+   opacity 0.032 keeps it subtle — just enough to break the flat digital feel.
+   pointer-events: none ensures it never intercepts clicks.
+───────────────────────────────────────────────────────────────────────────── */
 body::before {
   content: "";
   position: fixed;
@@ -64,4 +152,14 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 200px 200px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SHADCN BORDER DEFAULT
+   Makes `border` apply var(--border) colour without needing border-border class.
+───────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
 }

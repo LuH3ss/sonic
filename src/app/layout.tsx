@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -16,6 +17,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Cal Sans SemiBold — display font for headings (Industrial Dark spec)
+const calSans = localFont({
+  src: "./fonts/CalSans-SemiBold.woff2",
+  variable: "--font-cal",
+  weight: "600",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Sonic — Music Analytics",
   description: "AI-First music streaming analytics dashboard",
@@ -29,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${calSans.variable} h-full antialiased`}
     >
       <body className="bg-background text-foreground min-h-dvh font-sans">
         <Navbar />
