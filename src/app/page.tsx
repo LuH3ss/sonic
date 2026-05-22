@@ -5,7 +5,7 @@ export default function Home() {
         <h1 className="text-4xl font-semibold tracking-tight text-foreground">
           Sonic <span className="text-accent">Analytics</span>
         </h1>
-        <p className="text-muted text-lg leading-relaxed">
+        <p className="text-muted-foreground text-lg leading-relaxed">
           AI-First music streaming analytics dashboard. Connect your wallet or
           Spotify account to get started.
         </p>
